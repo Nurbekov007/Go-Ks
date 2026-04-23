@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 Stats - Team Roster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0d0f13;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1d26 0%, #0d0f13 100%);
+            border-radius: 10px;
+            border: 1px solid #2a2d36;
+        }
+
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(90deg, #ff4655 0%, #ff8800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, #1a1d26 0%, #12151c 100%);
+            border: 1px solid #2a2d36;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff4655, #ff8800);
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(255, 70, 85, 0.3);
+            border-color: #ff4655;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2a2d36;
+        }
+
+        .player-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ff8800;
+        }
+
+        .nickname {
+            font-size: 0.9em;
+            color: #999;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #ff4655;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.95em;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .stat-value.special {
+            background: linear-gradient(90deg, #ff4655, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Special styling for special players */
+        .player-card.mvp {
+            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, #2a2510 0%, #1a1d26 100%);
+        }
+
+        .player-card.mvp::before {
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+
+        .player-card.mvp .player-name {
+            color: #ffd700;
+        }
+
+        .player-card.mystery {
+            border: 2px solid #9c27b0;
+            background: linear-gradient(135deg, #1a0d26 0%, #12151c 100%);
+        }
+
+        .player-card.mystery::before {
+            background: linear-gradient(90deg, #9c27b0, #e91e63);
+        }
+
+        /* Video Section */
+        .video-section {
+            max-width: 1200px;
+            margin: 50px auto 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1d26 0%, #0d0f13 100%);
+            border: 1px solid #2a2d36;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .video-section h2 {
+            color: #ff8800;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .video-link {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff4655, #ff8800);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .video-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 70, 85, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .player-name {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚔️ CS2 SQUAD STATS ⚔️</h1>
+        <div class="subtitle">Статистика команды</div>
+    </div>
+
+    <div class="stats-container">
+        <!-- Player 1: Altynbek -->
+        <div class="player-card">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">Altynbek</div>
+                    <div class="nickname">Hight Tab</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value">1.44</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value">67%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value">50%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 2: 1satayy -->
+        <div class="player-card">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">1satayy</div>
+                    <div class="nickname">Смотрит Порно</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value">1.21</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value">50%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value">47%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 3: Alikhan -->
+        <div class="player-card">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">Alikhan</div>
+                    <div class="nickname">Разка бар нихуйево</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value">1.17</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value special">Алла каласа</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value special">Алла каласа</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 4: Kanish (MVP) -->
+        <div class="player-card mvp">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">⭐ Kanish ⭐</div>
+                    <div class="nickname">Самый лучший игрок мира</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value special">100.0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value special">100%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value special">100%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 5: Azamat -->
+        <div class="player-card">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">Azamat</div>
+                    <div class="nickname">Алиханга Комектесып отыршы ПЖ</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value">1.20</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value">42%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value">30%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 6: Erasyl (Mystery) -->
+        <div class="player-card mystery">
+            <div class="player-header">
+                <div>
+                    <div class="player-name">Erasyl</div>
+                    <div class="nickname">Келесын ба озы Зайбал?</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="stat-label">К/Д</span>
+                    <span class="stat-value special">?</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Попадания В Голову</span>
+                    <span class="stat-value special">?</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Процент Побед</span>
+                    <span class="stat-value special">?</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Section -->
+    <div class="video-section">
+        <h2>📹 Карандар наны зайбал керек болады</h2>
+        <a href="https://www.youtube.com/watch?v=MsNZVIk2gYE" target="_blank" class="video-link">
+            🎯 Ссылка на видео - Mirage Smoke Spots
+        </a>
+    </div>
+
+</body>
+</html>
